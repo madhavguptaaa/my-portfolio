@@ -64,6 +64,13 @@ const getBotResponse = (userMessage: string): string => {
   return predefinedAnswers['default'];
 };
 
+const sampleQuestions: string[] = [
+  'What are Madhav\'s key skills?',
+  'Can you summarize his experience?',
+  'Where can I view his projects?',
+  'How can I contact Madhav?',
+];
+
 export default function ChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [isWakingUp, setIsWakingUp] = useState(false);
@@ -86,22 +93,21 @@ export default function ChatBot() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = () => {
-    if (!inputValue.trim()) return;
+  const sendMessage = (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
 
     const userMessage: Message = {
-      text: inputValue,
+      text: trimmed,
       isBot: false,
       timestamp: new Date(),
     };
 
     setMessages((prev) => [...prev, userMessage]);
-    setInputValue('');
 
-    // Simulate bot thinking delay
     setTimeout(() => {
       const botResponse: Message = {
-        text: getBotResponse(inputValue),
+        text: getBotResponse(trimmed),
         isBot: true,
         timestamp: new Date(),
       };
@@ -109,11 +115,20 @@ export default function ChatBot() {
     }, 500);
   };
 
+  const handleSend = () => {
+    sendMessage(inputValue);
+    setInputValue('');
+  };
+
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
+  };
+
+  const handleSampleQuestion = (question: string) => {
+    sendMessage(question);
   };
 
   const handleDogClick = () => {
@@ -144,7 +159,7 @@ export default function ChatBot() {
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
             onClick={handleDogClick}
-            className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full shadow-lg hover:scale-110 transition-transform cursor-pointer flex items-center justify-center overflow-hidden"
+            className="fixed bottom-6 right-6 z-50 w-20 h-20 rounded-full shadow-xl hover:scale-110 transition-transform cursor-pointer flex items-center justify-center overflow-hidden bg-[#0d0d0d] border border-[#1f1f1f]"
             style={{ background: 'transparent' }}
           >
             <motion.div
@@ -163,8 +178,8 @@ export default function ChatBot() {
             >
               {/* Sleeping Dog SVG */}
               <svg
-                width="64"
-                height="64"
+                width="72"
+                height="72"
                 viewBox="0 0 64 64"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -345,7 +360,7 @@ export default function ChatBot() {
             initial={{ opacity: 0, y: 20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-6 right-6 z-50 w-96 h-[500px] bg-[#0a0a0a] border border-[#1f1f1f] rounded-lg shadow-2xl flex flex-col"
+            className="fixed bottom-6 right-6 z-50 w-[420px] max-w-[90vw] h-[520px] bg-[#0a0a0a] border border-[#1f1f1f] rounded-xl shadow-2xl flex flex-col"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-[#1f1f1f]">
@@ -388,6 +403,22 @@ export default function ChatBot() {
               >
                 <X size={18} className="text-[#888]" />
               </button>
+            </div>
+
+            {/* Suggested Questions */}
+            <div className="px-4 py-3 border-b border-[#1f1f1f] bg-[#0d0d0d]/60">
+              <div className="text-xs uppercase tracking-wide text-[#555] mb-2">Try asking</div>
+              <div className="flex flex-wrap gap-2">
+                {sampleQuestions.map((question, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSampleQuestion(question)}
+                    className="px-3 py-1.5 rounded-md border border-[#1f1f1f] text-xs text-[#888] hover:text-[#fafafa] hover:border-[#2a2a2a] transition-colors"
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Messages */}

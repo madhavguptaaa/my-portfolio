@@ -11,7 +11,7 @@ export default function Achievements() {
 
   // Image paths - you can add your images to public/achievements/ folder
   // and add their paths here
-  const achievementImages = [
+  const achievementImages: string[] = [
     // Example: Add your image paths here
     // '/achievements/image1.jpg',
     // '/achievements/image2.jpg',
